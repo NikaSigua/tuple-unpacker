@@ -1,19 +1,45 @@
-document.getElementById('submit').addEventListener('click', submitForm)
+document.getElementById('submit').addEventListener('click', submitForm);
 
 function submitForm(e) {
     e.preventDefault();
+    document.getElementById('formalized').textContent = "";
     document.getElementById('result').textContent = "";
     var tuple = document.getElementById('tuple');
     var definition = document.getElementById('definition');
 
     var array = string_to_array(tuple.value);
+    console.log(array);
+    kuratowski(array);
+    reverse(array);
+    short(array);
+    console.log("kuratowski: " + kuratowski(array));
+    console.log("reverse: " + reverse(array));
+    console.log("short: " + short(array));
     var string = array_to_string(array);
     //console.log(string_to_array(tuple.value));
     //console.log(tuple.value);
-    //console.log(definition.value);
-    document.getElementById('result').textContent = string;
+    console.log(definition.value);
+    if (definition.value == 1) {
+        document.getElementById('formalized').textContent = string;
+        document.getElementById('result').textContent = kuratowski(array);
+    }
+    else if (definition.value == 2) {
+        document.getElementById('formalized').textContent = string;
+        document.getElementById('result').textContent = reverse(array);
+    }
+    else if (definition.value == 3) {
+        document.getElementById('formalized').textContent = string;
+        document.getElementById('result').textContent = short(array);
+    }
     tuple.value = "";
     definition.value = "";
+}
+
+function processor(definition) {
+    console.log(definition.value);
+    if (definition.value == 1) {
+        return kuratowski()
+    }
 }
 
 function string_to_array(string) {
@@ -29,45 +55,160 @@ function array_to_string(array) {
     return tuple;
 }
 
+/* 
+Formalize takes a tuple and transforms it into an
+ordered pair, of which each index is itself either an ordered pair
+or a singleton, e.g., (1,2,3,4,5) -> ((((1,2),3),4),5). 
+*/
+
 function formalize(array) {
     if (array.length == 1) {
         console.log("Array length 1");
     }
     else if (array.length == 2) {
         if (Array.isArray(array[0]) && Array.isArray(array[1])) {
-            console.log("Before:" + array_to_string(array));
             var first = formalize(array[0]);
             var second = formalize(array[1]);
             var updated = [first, second];
-            console.log("After: " + array_to_string(updated));
             return updated;
         } 
         else if (Array.isArray(array[0]) && !(Array.isArray(array[1]))) {
-            console.log("Before: " + array_to_string(array));
             array.splice(0,1, formalize(array[0]));
-            console.log("After: " + array_to_string(array));
             return array;
         }
         else if (!(Array.isArray(array[0])) && Array.isArray(array[1])) {
-            console.log("Before: " + array_to_string(array));
             array.splice(1,1, formalize(array[1]));
-            console.log("After: " + array_to_string(array));
             return array;
         }
         else {
-            console.log("Neither are arrays: " + array_to_string(array));
             return array;
         }
     }
     else {
-        console.log("Before: " + array_to_string(array));
         var first = array.shift();
         var second = array.shift();
         var updated = formalize([first,second]);
         array.unshift(updated)
-        console.log("After: " + array_to_string(array));
         return formalize(array);
     }
 }
 
+/* 
+Kuratowski's definiton of an ordered pair is (x,y) := {{x},{x,y}}.
+*/
 
+function kuratowski(array) {
+    if (array.length == 1) {
+        console.log("Problematic: length 1.");
+    }
+    else if (array.length == 2) {
+        if (Array.isArray(array[0]) && Array.isArray(array[1])) {
+            if (JSON.stringify(array[0]) == JSON.stringify(array[1])) {
+                var set = "{{" + kuratowski(array[0]) + "}}";
+                return set;
+            }
+            else {
+                var set = "{{" + kuratowski(array[0]) + "},{" + kuratowski(array[0]) + "," + kuratowski(array[1]) + "}}";
+                return set;
+            }
+        } 
+        else if (Array.isArray(array[0]) && !(Array.isArray(array[1]))) {
+            var set = "{{" + kuratowski(array[0]) + "},{" + kuratowski(array[0]) + "," + array[1] + "}}";
+            return set;
+        }
+        else if (!(Array.isArray(array[0])) && Array.isArray(array[1])) {
+            var set = "{{" + array[0] + "},{" + array[0] + "," + kuratowski(array[1]) + "}}";
+            return set;
+        }
+        else {
+            if (JSON.stringify(array[0]) == JSON.stringify(array[1])) {
+                var set = "{{" + array[0] + "}}";
+                return set;
+            }
+            else {
+                var set = "{{" + array[0] + "},{" + array[0] + "," + array[1] + "}}";
+                return set;
+            }
+        }
+    }
+}
+
+/* 
+The 'reverse' definiton of an ordered pair is (x,y) := {{y},{y,x}} 
+*/
+
+function reverse(array) {
+    if (array.length == 1) {
+        console.log("Problematic: length 1.");
+    }
+    else if (array.length == 2) {
+        if (Array.isArray(array[0]) && Array.isArray(array[1])) {
+            if (JSON.stringify(array[0]) == JSON.stringify(array[1])) {
+                var set = "{{" + reverse(array[1]) + "}}";
+                return set;
+            }
+            else {
+                var set = "{{" + reverse(array[1]) + "},{" + reverse(array[1]) + "," + reverse(array[0]) + "}}";
+                return set;
+            }
+        } 
+        else if (Array.isArray(array[0]) && !(Array.isArray(array[1]))) {
+            var set = "{{" + array[1] + "},{" + array[1] + "," + reverse(array[0]) + "}}";
+            return set;
+        }
+        else if (!(Array.isArray(array[0])) && Array.isArray(array[1])) {
+            var set = "{{" + reverse(array[1]) + "},{" + reverse(array[1]) + "," + array[0] + "}}";
+            return set;
+        }
+        else {
+            if (JSON.stringify(array[0]) == JSON.stringify(array[1])) {
+                var set = "{{" + array[1] + "}}";
+                return set;
+            }
+            else {
+                var set = "{{" + array[1] + "},{" + array[1] + "," + array[0] + "}}";
+                return set;
+            }
+        }
+    }
+}
+
+/* 
+The 'short' definiton of an ordered pair is (x,y) := {x,{x,y}}.
+*/
+
+function short(array) {
+    if (array.length == 1) {
+        console.log("Problematic: length 1.");
+    }
+    else if (array.length == 2) {
+        if (Array.isArray(array[0]) && Array.isArray(array[1])) {
+            if (JSON.stringify(array[0]) == JSON.stringify(array[1])) {
+                var set = "{" + short(array[0]) + ",{" + short(array[0]) + "}}";
+                return set;
+            }
+            else {
+                var set = "{" + short(array[0]) + ",{" + short(array[0]) + "," + short(array[1]) + "}}";
+                return set;
+            }
+        } 
+        else if (Array.isArray(array[0]) && !(Array.isArray(array[1]))) {
+            var set = "{" + short(array[0]) + ",{" + short(array[0]) + "," + array[1] + "}}";
+            return set;
+        }
+        else if (!(Array.isArray(array[0])) && Array.isArray(array[1])) {
+            var set = "{" + array[0] + ",{" + array[0] + "," + short(array[1]) + "}}";
+            return set;
+        }
+        else {
+            if (JSON.stringify(array[0]) == JSON.stringify(array[1])) {
+                var set = "{" + array[0] + ",{" + array[0] + "}}";
+                return set;
+            }
+            else {
+                var set = "{" + array[0] + ",{" + array[0] + "," + array[1] + "}}";
+                return set;
+            }
+        }
+    }
+}
