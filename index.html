@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>!</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <form action="" method="GET" class="form" onsubmit="submitForm(); return false;">
+        <label>label</label>
+        <input type="text" name="name" id="tuple" placeholder="enter your tuple here" required>
+        <select id="definition" required>
+            <option value="" disabled selected>choose your definition of an ordered pair</option>
+            <option value="1">Kuratowski: (x,y) := {{x},{x,y}}</option>
+            <option value="2">Reverse: (x,y) := {{y},{y,x}}</option>
+            <option value="3">Short: (x,y) := {x,{x,y}}</option>
+            <option value="3">01: (x,y) := {{0,x},{1,y}}</option>
+        </select>
+        <input type="submit" value="submit" id="submit">
+    </form>
+    <div id="result">
+        .
+    </div>
+    <script src="/script.js"></script>
+</body>
+</html>
