@@ -9,12 +9,14 @@ function submitForm(e) {
 
     var array = string_to_array(tuple.value);
     console.log(array);
-    kuratowski(array);
-    reverse(array);
-    short(array);
-    console.log("kuratowski: " + kuratowski(array));
-    console.log("reverse: " + reverse(array));
-    console.log("short: " + short(array));
+    //kuratowski(array);
+    //reverse(array);
+    //short(array);
+    //zeroone(array);
+    //console.log("kuratowski: " + kuratowski(array));
+    //console.log("reverse: " + reverse(array));
+    //console.log("short: " + short(array));
+    //console.log("zeroone: " + zeroone(array));
     var string = array_to_string(array);
     //console.log(string_to_array(tuple.value));
     //console.log(tuple.value);
@@ -30,6 +32,18 @@ function submitForm(e) {
     else if (definition.value == 3) {
         document.getElementById('formalized').textContent = string;
         document.getElementById('result').textContent = short(array);
+    }
+    else if (definition.value == 4) {
+        document.getElementById('formalized').textContent = string;
+        document.getElementById('result').textContent = zeroone(array);
+    }
+    else if (definition.value == 5) {
+        document.getElementById('formalized').textContent = string;
+        document.getElementById('result').textContent = hausdorff(array);
+    }
+    else if (definition.value == 6) {
+        document.getElementById('formalized').textContent = string;
+        document.getElementById('result').textContent = wiener(array);
     }
     tuple.value = "";
     definition.value = "";
@@ -96,7 +110,6 @@ function formalize(array) {
 /* 
 Kuratowski's definiton of an ordered pair is (x,y) := {{x},{x,y}}.
 */
-
 function kuratowski(array) {
     if (array.length == 1) {
         console.log("Problematic: length 1.");
@@ -136,7 +149,6 @@ function kuratowski(array) {
 /* 
 The 'reverse' definiton of an ordered pair is (x,y) := {{y},{y,x}} 
 */
-
 function reverse(array) {
     if (array.length == 1) {
         console.log("Problematic: length 1.");
@@ -176,7 +188,6 @@ function reverse(array) {
 /* 
 The 'short' definiton of an ordered pair is (x,y) := {x,{x,y}}.
 */
-
 function short(array) {
     if (array.length == 1) {
         console.log("Problematic: length 1.");
@@ -209,6 +220,135 @@ function short(array) {
                 var set = "{" + array[0] + ",{" + array[0] + "," + array[1] + "}}";
                 return set;
             }
+        }
+    }
+}
+
+/* 
+The 01 definiton of an ordered pair is (x,y) := {{0,x},{1,y}}.
+*/
+function zeroone(array) {
+    if (array.length == 1) {
+        console.log("Problematic: length 1.");
+    }
+    else if (array.length == 2) {
+        if (Array.isArray(array[0]) && Array.isArray(array[1])) {
+            var set = "{{0," + zeroone(array[0]) + "},{1," + zeroone(array[1]) + "}}";
+            return set;
+        } 
+        else if (Array.isArray(array[0]) && !(Array.isArray(array[1]))) {
+            if (JSON.stringify(array[1]) == 1) {
+                var set = "{{0," + zeroone(array[0]) + "},{1}}";
+                return set;
+            }
+            else {
+                var set = "{{0," + zeroone(array[0]) + "},{1," + array[1] + "}}";
+                return set;
+            }
+        }
+        else if (!(Array.isArray(array[0])) && Array.isArray(array[1])) {
+            if (JSON.stringify(array[0]) == 0) {
+                var set = "{{0},{1," + zeroone(array[0]) + "}}";
+                return set;
+            }
+            else {
+                var set = "{{0," + array[0] + "},{1," + zeroone(array[1]) + "}}";
+                return set;
+            }
+        }
+        else {
+            if (JSON.stringify(array[0]) == JSON.stringify(array[1])) {
+                if (JSON.stringify(array[0]) == 0) {
+                    var set = "{{0},{1,0}}";
+                    return set;
+                }
+                else if (JSON.stringify(array[1]) == 1) {
+                    var set = "{{0,1},{1}}"
+                    return set;
+                }
+                else {
+                    var set = "{{0," + array[0] + "},{1," + array[1] + "}}";
+                    return set;
+                }
+            }
+        }
+    }
+}
+
+/* 
+Hausdorff's definiton of an ordered pair is (x,y) := {{x,1},{y,2}}.
+*/
+function hausdorff(array) {
+    if (array.length == 1) {
+        console.log("Problematic: length 1.");
+    }
+    else if (array.length == 2) {
+        if (Array.isArray(array[0]) && Array.isArray(array[1])) {
+            var set = "{{" + hausdorff(array[0]) + ",1},{" + hausdorff(array[1]) + ",2}}";
+            return set;
+        } 
+        else if (Array.isArray(array[0]) && !(Array.isArray(array[1]))) {
+            if (JSON.stringify(array[1]) == 2) {
+                var set = "{{" + hausdorff(array[0]) + ",1},{2}}";
+                return set;
+            }
+            else {
+                var set = "{{" + hausdorff(array[0]) + ",1},{" + array[1] + ",2}}";
+                return set;
+            }
+        }
+        else if (!(Array.isArray(array[0])) && Array.isArray(array[1])) {
+            if (JSON.stringify(array[0]) == 1) {
+                var set = "{{1},{" + hausdorff(array[1]) + ",2}}";
+                return set;
+            }
+            else {
+                var set = "{{" + array[0] + ",1},{" + hausdorff(array[1]) + ",2}}";
+                return set;
+            }
+        }
+        else {
+            if (JSON.stringify(array[0]) == JSON.stringify(array[1])) {
+                if (JSON.stringify(array[0]) == 1) {
+                    var set = "{{1},{1,2}}";
+                    return set;
+                }
+                else if (JSON.stringify(array[1]) == 2) {
+                    var set = "{{2,1},{2}}"
+                    return set;
+                }
+                else {
+                    var set = "{{" + array[0] + ",1},{" + array[1] + ",2}}";
+                    return set;
+                }
+            }
+        }
+    }
+}
+
+/* 
+Wiener's definiton of an ordered pair is (x,y) := {{{x},{}},{{y}}}.
+*/
+function wiener(array) {
+    if (array.length == 1) {
+        console.log("Problematic: length 1.");
+    }
+    else if (array.length == 2) {
+        if (Array.isArray(array[0]) && Array.isArray(array[1])) {
+            var set = "{{{" + wiener(array[0]) + "},{}},{{" + wiener(array[1]) + "}}}";
+            return set;
+        }
+        else if (Array.isArray(array[0]) && !(Array.isArray(array[1]))) {
+            var set = "{{{" + wiener(array[0]) + "},{}},{{" + array[1] + "}}}";
+            return set;
+        }
+        else if (!(Array.isArray(array[0])) && Array.isArray(array[1])) {
+            var set = "{{{" + array[0] + "},{}},{{" + wiener(array[1]) + "}}}";
+            return set;
+        }
+        else {
+            var set = "{{{" + array[0] + "},{}},{{" + array[1] + "}}}";
+            return set;
         }
     }
 }
