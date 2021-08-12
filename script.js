@@ -6,21 +6,8 @@ function submitForm(e) {
     document.getElementById('result').textContent = "";
     var tuple = document.getElementById('tuple');
     var definition = document.getElementById('definition');
-
     var array = string_to_array(tuple.value);
-    console.log(array);
-    //kuratowski(array);
-    //reverse(array);
-    //short(array);
-    //zeroone(array);
-    //console.log("kuratowski: " + kuratowski(array));
-    //console.log("reverse: " + reverse(array));
-    //console.log("short: " + short(array));
-    //console.log("zeroone: " + zeroone(array));
     var string = array_to_string(array);
-    //console.log(string_to_array(tuple.value));
-    //console.log(tuple.value);
-    console.log(definition.value);
     if (definition.value == 1) {
         document.getElementById('formalized').textContent = string;
         document.getElementById('result').textContent = kuratowski(array);
@@ -47,13 +34,6 @@ function submitForm(e) {
     }
     tuple.value = "";
     definition.value = "";
-}
-
-function processor(definition) {
-    console.log(definition.value);
-    if (definition.value == 1) {
-        return kuratowski()
-    }
 }
 
 function string_to_array(string) {
