@@ -11,26 +11,38 @@ function submitForm(e) {
     if (definition.value == 1) {
         document.getElementById('formalized').textContent = string;
         document.getElementById('result').textContent = kuratowski(array);
+        document.getElementById('hidden').style.display = 'block';
+        document.getElementById('hidden2').style.display = 'block';
     }
     else if (definition.value == 2) {
         document.getElementById('formalized').textContent = string;
         document.getElementById('result').textContent = reverse(array);
+        document.getElementById('hidden').style.display = 'block';
+        document.getElementById('hidden2').style.display = 'block';
     }
     else if (definition.value == 3) {
         document.getElementById('formalized').textContent = string;
         document.getElementById('result').textContent = short(array);
+        document.getElementById('hidden').style.display = 'block';
+        document.getElementById('hidden2').style.display = 'block';
     }
     else if (definition.value == 4) {
         document.getElementById('formalized').textContent = string;
         document.getElementById('result').textContent = zeroone(array);
+        document.getElementById('hidden').style.display = 'block';
+        document.getElementById('hidden2').style.display = 'block';
     }
     else if (definition.value == 5) {
         document.getElementById('formalized').textContent = string;
         document.getElementById('result').textContent = hausdorff(array);
+        document.getElementById('hidden').style.display = 'block';
+        document.getElementById('hidden2').style.display = 'block';
     }
     else if (definition.value == 6) {
         document.getElementById('formalized').textContent = string;
         document.getElementById('result').textContent = wiener(array);
+        document.getElementById('hidden').style.display = 'block';
+        document.getElementById('hidden2').style.display = 'block';
     }
     tuple.value = "";
     definition.value = "";

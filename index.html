@@ -9,7 +9,11 @@
 </head>
 <body>
     <form action="" method="GET" class="form" onsubmit="submitForm(); return false;">
-        <label>label</label>
+        <label>
+            Enter your <span style="font-style:italic;">n</span>-tuple in the textbox below in the following format:<br>
+            (<span style="font-style:italic;">x<sub>1</sub>, x<sub>2</sub>, ... , x<sub>n</sub></span>)<br>
+            where each <span style="font-style:italic;">x<sub>i</sub></span> is a number.
+        </label><br><br>
         <input type="text" name="name" id="tuple" placeholder="enter your tuple here" required>
         <select id="definition" required>
             <option value="" disabled selected>choose your definition of an ordered pair</option>
@@ -21,11 +25,12 @@
             <option value="6">Wiener: (x,y) := {{{x},{}},{{y}}}</option>
         </select>
         <input type="submit" value="submit" id="submit">
+        <br><br>
+        <div id="hidden">Formalized tuple:</div>
+        <div id="formalized"></div><br>
+        <div id="hidden2">Result:</div>
+        <div id="result"></div>
     </form>
-    <div>formalized tuple:</div>
-    <div id="formalized"></div>
-    <div>result:</div>
-    <div id="result"></div>
     <script src="/script.js"></script>
 </body>
 </html>
