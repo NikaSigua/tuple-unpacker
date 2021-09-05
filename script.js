@@ -68,9 +68,7 @@ or a singleton, e.g., (1,2,3,4,5) -> ((((1,2),3),4),5).
 */
 
 const formalize = array =>  {
-    if (array.length == 1) {
-        console.log("Array length 1");
-    }
+    if (array.length == 1) {console.log("Array length 1");}
     else if (array.length == 2) {
         if (Array.isArray(array[0]) && Array.isArray(array[1])) {
             let first = formalize(array[0]);
@@ -86,9 +84,7 @@ const formalize = array =>  {
             array.splice(1,1, formalize(array[1]));
             return array;
         }
-        else {
-            return array;
-        }
+        else {return array;}
     }
     else {
         let first = array.shift();
@@ -99,248 +95,128 @@ const formalize = array =>  {
     }
 }
 
-/* 
-Kuratowski's definiton of an ordered pair is (x,y) := {{x},{x,y}}.
-*/
+/* Kuratowski's definiton of an ordered pair is (x,y) := {{x},{x,y}}. */
 const kuratowski = array => {
-    if (array.length == 1) {
-        console.log("Problematic: length 1.");
-    }
-    else if (array.length == 2) {
-        if (Array.isArray(array[0]) && Array.isArray(array[1])) {
-            if (JSON.stringify(array[0]) == JSON.stringify(array[1])) {
-                let set = "{{" + kuratowski(array[0]) + "}}";
-                return set;
-            }
-            else {
-                let set = "{{" + kuratowski(array[0]) + "},{" + kuratowski(array[0]) + "," + kuratowski(array[1]) + "}}";
-                return set;
-            }
-        } 
-        else if (Array.isArray(array[0]) && !(Array.isArray(array[1]))) {
-            let set = "{{" + kuratowski(array[0]) + "},{" + kuratowski(array[0]) + "," + array[1] + "}}";
-            return set;
-        }
-        else if (!(Array.isArray(array[0])) && Array.isArray(array[1])) {
-            let set = "{{" + array[0] + "},{" + array[0] + "," + kuratowski(array[1]) + "}}";
-            return set;
-        }
-        else {
-            if (JSON.stringify(array[0]) == JSON.stringify(array[1])) {
-                let set = "{{" + array[0] + "}}";
-                return set;
-            }
-            else {
-                let set = "{{" + array[0] + "},{" + array[0] + "," + array[1] + "}}";
-                return set;
-            }
-        }
-    }
+    const x = array[0];
+    const y = array[1];
+
+    let x_is_array = Array.isArray(x);
+    let y_is_array = Array.isArray(y);
+    let x_and_y_are_identical = (JSON.stringify(x) == JSON.stringify(y));
+
+    if (array.length != 2) return console.log("Error: Tuple is not an ordered pair.");
+    if (x_is_array && y_is_array && x_and_y_are_identical) return `{{${kuratowski(x)}}}`;
+    if (x_is_array && y_is_array && !x_and_y_are_identical) return `{{${kuratowski(x)}},{${kuratowski(x)},${kuratowski(y)}}}`;
+    if (x_is_array && !y_is_array) return `{{${kuratowski(x)}},{${kuratowski(x)},${y}}}`;
+    if (!x_is_array && y_is_array) return `{{${x}},{${x},${kuratowski(y)}}}`;
+    if (!x_is_array && !y_is_array && x_and_y_are_identical) return `{{${x}}}`;
+    if (!x_is_array && !y_is_array && !x_and_y_are_identical) return `{{${x}},{${x},${y}}}`;
 }
 
-/* 
-The 'reverse' definiton of an ordered pair is (x,y) := {{y},{y,x}} 
-*/
+/* The 'reverse' definiton of an ordered pair is (x,y) := {{y},{y,x}} */
 const reverse = array => {
-    if (array.length == 1) {
-        console.log("Problematic: length 1.");
-    }
-    else if (array.length == 2) {
-        if (Array.isArray(array[0]) && Array.isArray(array[1])) {
-            if (JSON.stringify(array[0]) == JSON.stringify(array[1])) {
-                let set = "{{" + reverse(array[1]) + "}}";
-                return set;
-            }
-            else {
-                let set = "{{" + reverse(array[1]) + "},{" + reverse(array[1]) + "," + reverse(array[0]) + "}}";
-                return set;
-            }
-        } 
-        else if (Array.isArray(array[0]) && !(Array.isArray(array[1]))) {
-            let set = "{{" + array[1] + "},{" + array[1] + "," + reverse(array[0]) + "}}";
-            return set;
-        }
-        else if (!(Array.isArray(array[0])) && Array.isArray(array[1])) {
-            let set = "{{" + reverse(array[1]) + "},{" + reverse(array[1]) + "," + array[0] + "}}";
-            return set;
-        }
-        else {
-            if (JSON.stringify(array[0]) == JSON.stringify(array[1])) {
-                let set = "{{" + array[1] + "}}";
-                return set;
-            }
-            else {
-                let set = "{{" + array[1] + "},{" + array[1] + "," + array[0] + "}}";
-                return set;
-            }
-        }
-    }
+    const x = array[0];
+    const y = array[1];
+
+    let x_is_array = Array.isArray(x);
+    let y_is_array = Array.isArray(y);
+    let x_and_y_are_identical = (JSON.stringify(x) == JSON.stringify(y));
+
+    if (array.length != 2) return console.log("Error: Tuple is not an ordered pair.");
+    if (x_is_array && y_is_array && x_and_y_are_identical) return `{{${reverse(y)}}}`;
+    if (x_is_array && y_is_array && !x_and_y_are_identical) return `{{${reverse(y)}},{${reverse(y)},${reverse(x)}}}`;
+    if (x_is_array && !y_is_array) return `{{${y}},{${y},${reverse(x)}}}`;
+    if (!x_is_array && y_is_array) return `{{${reverse(y)}},{${reverse(y)},${x}}}`;
+    if (!x_is_array && !y_is_array && x_and_y_are_identical) return `{{${y}}}`;
+    if (!x_is_array && !y_is_array && !x_and_y_are_identical) return `{{${y}},{${y},${x}}}`;
 }
 
-/* 
-The 'short' definiton of an ordered pair is (x,y) := {x,{x,y}}.
-*/
+/* The 'short' definiton of an ordered pair is (x,y) := {x,{x,y}}. */
 const short = array => {
-    if (array.length == 1) {
-        console.log("Problematic: length 1.");
-    }
-    else if (array.length == 2) {
-        if (Array.isArray(array[0]) && Array.isArray(array[1])) {
-            if (JSON.stringify(array[0]) == JSON.stringify(array[1])) {
-                let set = "{" + short(array[0]) + ",{" + short(array[0]) + "}}";
-                return set;
-            }
-            else {
-                let set = "{" + short(array[0]) + ",{" + short(array[0]) + "," + short(array[1]) + "}}";
-                return set;
-            }
-        } 
-        else if (Array.isArray(array[0]) && !(Array.isArray(array[1]))) {
-            let set = "{" + short(array[0]) + ",{" + short(array[0]) + "," + array[1] + "}}";
-            return set;
-        }
-        else if (!(Array.isArray(array[0])) && Array.isArray(array[1])) {
-            let set = "{" + array[0] + ",{" + array[0] + "," + short(array[1]) + "}}";
-            return set;
-        }
-        else {
-            if (JSON.stringify(array[0]) == JSON.stringify(array[1])) {
-                let set = "{" + array[0] + ",{" + array[0] + "}}";
-                return set;
-            }
-            else {
-                let set = "{" + array[0] + ",{" + array[0] + "," + array[1] + "}}";
-                return set;
-            }
-        }
-    }
+    const x = array[0];
+    const y = array[1];
+
+    let x_is_array = Array.isArray(x);
+    let y_is_array = Array.isArray(y);
+    let x_and_y_are_identical = (JSON.stringify(x) == JSON.stringify(y));
+
+    if (array.length != 2) return console.log("Error: Tuple is not an ordered pair.");
+    if (x_is_array && y_is_array && x_and_y_are_identical) return `{${short(x)},{${short(x)}}}`;
+    if (x_is_array && y_is_array && !x_and_y_are_identical) return `{${short(x)},{${short(x)},${short(y)}}}`;
+    if (x_is_array && !y_is_array) return `{${short(x)},{${short(x)},${y}}}`;
+    if (!x_is_array && y_is_array) return `{${x},{${x},${short(y)}}}`;
+    if (!x_is_array && !y_is_array && x_and_y_are_identical) return `{${x},{${x}}}`;
+    if (!x_is_array && !y_is_array && !x_and_y_are_identical) return `{${x},{${x},${y}}}`;
 }
 
-/* 
-The 01 definiton of an ordered pair is (x,y) := {{0,x},{1,y}}.
-*/
+
+/* The 01 definiton of an ordered pair is (x,y) := {{0,x},{1,y}}. */
 const zeroone = array => {
-    if (array.length == 1) {
-        console.log("Problematic: length 1.");
-    }
-    else if (array.length == 2) {
-        if (Array.isArray(array[0]) && Array.isArray(array[1])) {
-            let set = "{{0," + zeroone(array[0]) + "},{1," + zeroone(array[1]) + "}}";
-            return set;
-        } 
-        else if (Array.isArray(array[0]) && !(Array.isArray(array[1]))) {
-            if (JSON.stringify(array[1]) == 1) {
-                let set = "{{0," + zeroone(array[0]) + "},{1}}";
-                return set;
-            }
-            else {
-                let set = "{{0," + zeroone(array[0]) + "},{1," + array[1] + "}}";
-                return set;
-            }
-        }
-        else if (!(Array.isArray(array[0])) && Array.isArray(array[1])) {
-            if (JSON.stringify(array[0]) == 0) {
-                let set = "{{0},{1," + zeroone(array[0]) + "}}";
-                return set;
-            }
-            else {
-                let set = "{{0," + array[0] + "},{1," + zeroone(array[1]) + "}}";
-                return set;
-            }
-        }
-        else {
-            if (JSON.stringify(array[0]) == JSON.stringify(array[1])) {
-                if (JSON.stringify(array[0]) == 0) {
-                    let set = "{{0},{1,0}}";
-                    return set;
-                }
-                else if (JSON.stringify(array[1]) == 1) {
-                    let set = "{{0,1},{1}}"
-                    return set;
-                }
-                else {
-                    let set = "{{0," + array[0] + "},{1," + array[1] + "}}";
-                    return set;
-                }
-            }
-        }
-    }
+    const x = array[0];
+    const y = array[1];
+
+    let x_is_array = Array.isArray(x);
+    let y_is_array = Array.isArray(y);
+    let x_equals_0 = JSON.stringify(x) == 0;
+    let y_equals_0 = JSON.stringify(y) == 0;
+    let x_equals_1 = JSON.stringify(x) == 1;
+    let y_equals_1 = JSON.stringify(y) == 1;
+    let x_and_y_are_identical = (JSON.stringify(x) == JSON.stringify(y));
+
+    if (array.length != 2) return console.log("Error: Tuple is not an ordered pair.");
+    if (x_is_array && y_is_array) return `{{0,${zeroone(x)}},{1,${zeroone(y)}}}`;
+    if (x_is_array && !y_is_array && y_equals_1) return `{{0,${zeroone(x)}},{1}}`;
+    if (x_is_array && !y_is_array && !y_equals_1) return `{{0,${zeroone(x)}},{1,${y}}}`;
+    if (!x_is_array && y_is_array && x_equals_0) return `{{0},{1,${zeroone(y)}}}`;
+    if (!x_is_array && y_is_array && !x_equals_0) return `{{0,${x}},{1,${zeroone(y)}}}`;
+    if (!x_is_array && !y_is_array && x_equals_0 && y_equals_0) return `{{0},{1,0}}`;
+    if (!x_is_array && !y_is_array && x_equals_0 && y_equals_1) return `{{0},{1}}`;
+    // ! ISSUE: on input (1,0), the result is {{0,1},{1,0}}, which is not reduced.
+    // TODO: figure out how to reduce {{0,1},{1,0}}.
+    //if (!x_is_array && !y_is_array && x_equals_1 && y_equals_0) return `{{0,1}}`;
+    if (!x_is_array && !y_is_array && x_equals_1 && y_equals_1) return `{{0,1},{1}}`;
+    if (!x_is_array && !y_is_array && !x_and_y_are_identical) return `{{0,${x}},{1,${y}}}`;  
 }
 
-/* 
-Hausdorff's definiton of an ordered pair is (x,y) := {{x,1},{y,2}}.
-*/
+/* Hausdorff's definiton of an ordered pair is (x,y) := {{x,1},{y,2}}. */
 const hausdorff = array => {
-    if (array.length == 1) {
-        console.log("Problematic: length 1.");
-    }
-    else if (array.length == 2) {
-        if (Array.isArray(array[0]) && Array.isArray(array[1])) {
-            let set = "{{" + hausdorff(array[0]) + ",1},{" + hausdorff(array[1]) + ",2}}";
-            return set;
-        } 
-        else if (Array.isArray(array[0]) && !(Array.isArray(array[1]))) {
-            if (JSON.stringify(array[1]) == 2) {
-                let set = "{{" + hausdorff(array[0]) + ",1},{2}}";
-                return set;
-            }
-            else {
-                let set = "{{" + hausdorff(array[0]) + ",1},{" + array[1] + ",2}}";
-                return set;
-            }
-        }
-        else if (!(Array.isArray(array[0])) && Array.isArray(array[1])) {
-            if (JSON.stringify(array[0]) == 1) {
-                let set = "{{1},{" + hausdorff(array[1]) + ",2}}";
-                return set;
-            }
-            else {
-                let set = "{{" + array[0] + ",1},{" + hausdorff(array[1]) + ",2}}";
-                return set;
-            }
-        }
-        else {
-            if (JSON.stringify(array[0]) == JSON.stringify(array[1])) {
-                if (JSON.stringify(array[0]) == 1) {
-                    let set = "{{1},{1,2}}";
-                    return set;
-                }
-                else if (JSON.stringify(array[1]) == 2) {
-                    let set = "{{2,1},{2}}"
-                    return set;
-                }
-                else {
-                    let set = "{{" + array[0] + ",1},{" + array[1] + ",2}}";
-                    return set;
-                }
-            }
-        }
-    }
+    const x = array[0];
+    const y = array[1];
+
+    let x_is_array = Array.isArray(x);
+    let y_is_array = Array.isArray(y);
+    let x_equals_1 = JSON.stringify(x) == 1;
+    let y_equals_1 = JSON.stringify(y) == 1;
+    let x_equals_2 = JSON.stringify(x) == 2;
+    let y_equals_2 = JSON.stringify(y) == 2;
+    let x_and_y_are_identical = (JSON.stringify(x) == JSON.stringify(y));
+
+    if (array.length != 2) return console.log("Error: Tuple is not an ordered pair.");
+    if (x_is_array && y_is_array) return `{{${hausdorff(x)},1},{${hausdorff(y)},2}}`;
+    if (x_is_array && !y_is_array && y_equals_2) return `{{${hausdorff(x)},1},{2}}`;
+    if (x_is_array && !y_is_array && !y_equals_2) return `{{${hausdorff(x)},1},{${y},2}}`;
+    if (!x_is_array && y_is_array && x_equals_1) return `{{1},{${hausdorff(y)},2}}`;
+    if (!x_is_array && y_is_array && !x_equals_1) return `{{${x},1},{${hausdorff(y)},2}}`;
+    if (!x_is_array && !y_is_array && x_equals_1 && y_equals_1) return `{{1},{1,2}}`;
+    if (!x_is_array && !y_is_array && x_equals_1 && y_equals_2) return `{{1},{2}}`;
+    // ! ISSUE: on input (2,1), the result is {{2,1},{1,2}}, which is not reduced.
+    // TODO: figure out how to reduce {{2,1},{1,2}}.
+    //if (!x_is_array && !y_is_array && x_equals_2 && y_equals_1) return `{{1,2}}`;
+    if (!x_is_array && !y_is_array && x_equals_2 && y_equals_2) return `{{2,1},{2}}`;
+    if (!x_is_array && !y_is_array && !x_and_y_are_identical) return `{{${x},1},{${y},2}}`;
 }
 
-/* 
-Wiener's definiton of an ordered pair is (x,y) := {{{x},{}},{{y}}}.
-*/
+/* Wiener's definiton of an ordered pair is (x,y) := {{{x},{}},{{y}}}. */
 const wiener = array => {
-    if (array.length == 1) {
-        console.log("Problematic: length 1.");
-    }
-    else if (array.length == 2) {
-        if (Array.isArray(array[0]) && Array.isArray(array[1])) {
-            let set = "{{{" + wiener(array[0]) + "},{}},{{" + wiener(array[1]) + "}}}";
-            return set;
-        }
-        else if (Array.isArray(array[0]) && !(Array.isArray(array[1]))) {
-            let set = "{{{" + wiener(array[0]) + "},{}},{{" + array[1] + "}}}";
-            return set;
-        }
-        else if (!(Array.isArray(array[0])) && Array.isArray(array[1])) {
-            let set = "{{{" + array[0] + "},{}},{{" + wiener(array[1]) + "}}}";
-            return set;
-        }
-        else {
-            let set = "{{{" + array[0] + "},{}},{{" + array[1] + "}}}";
-            return set;
-        }
-    }
+    const x = array[0];
+    const y = array[1];
+
+    let x_is_array = Array.isArray(x);
+    let y_is_array = Array.isArray(y);
+
+    if (array.length != 2) return console.log("Error: Tuple is not an ordered pair.");
+    if (x_is_array && y_is_array) return `{{{${wiener(x)}},{}},{{${wiener(y)}}}}`;
+    if (x_is_array && !y_is_array) return `{{{${wiener(x)}},{}},{{${y}}}}`;
+    if (!x_is_array && y_is_array) return `{{{${x}},{}},{{${wiener(y)}}}}`;
+    if (!x_is_array && !y_is_array) return `{{{${x}},{}},{{${y}}}}`;
 }
