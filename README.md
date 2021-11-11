@@ -32,3 +32,4 @@ Features for the future:
 - Reintroduce the ability to use characters other than numerals.
 - Reintroduce the ability to unpack numbers themselves (with von Neumann ordinals and other options).
 - Reintroduce the ability encode '{' as '1' and '}' as '0' (to allow for binary plot visualization options).
+- Resolve issues with reducing sets like '{{a,b},{b,a}}' to either '{{a,b}}' or '{{b,a}}'.
